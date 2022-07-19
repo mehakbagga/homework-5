@@ -1,0 +1,9 @@
+<h1>Posts Index Page</h1>
+<p>I am found in the posts#index controller actions</p>
+<p>This will be my route: get('/posts', to: 'posts#index', as: :posts_index)</p>
+
+<% @posts.each do |post| %>
+  <div>
+    <h2><%= link_to post.title, post_path(post) %></h2>
+  </div>
+<% end %>
