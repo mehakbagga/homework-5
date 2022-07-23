@@ -5,14 +5,14 @@
 
 <div>
   <%= link_to 'Edit', edit_post_path(@post) %>
-  <%= link_to 'Delete', post_path(@post), method: :delete, form: { data: { turbo_confirm: "Are you sure?" } }  %>
+  <%= button_to 'Delete', post_path(@post), method: :delete, form: { data: { turbo_confirm: "Are you sure?" } }  %>  
 </div>
 
 <% @answers.each do |answer| %>
     <div>
     <%= answer.body %>
     <small>Commented <%= time_ago_in_words(answer.created_at) %></small>
-    <%= link_to "Delete", post_answer_path(@post.id, answer.id), method: :delete,form: { data: { turbo_confirm: "Are you sure?" } } %>  
+    <%= button_to "Delete", post_answer_path(@post, answer), method: :delete,form: { data: { turbo_confirm: "Are you sure?" } } %>  
     
     <hr>
     </div>
