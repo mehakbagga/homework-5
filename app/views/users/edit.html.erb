@@ -1,0 +1,19 @@
+<div>
+    <%= form_with model: @user, method: :patch, local: true do |f| %>
+    <div>
+        <%= f.label :first_name %>
+        <%= f.text_field :first_name %>
+    </div>
+    <div>
+        <%= f.label :last_name %>
+        <%= f.text_field :last_name %>
+    </div>
+    <div>
+        <%= f.label :email %>
+        <%= f.email_field :email %>
+    </div>
+    <%= f.submit "Update", class: 'btn btn-primary' %>
+    <% end %>
+    <br/>
+    <%= link_to 'Change Password', edit_password_path(@user) %>
+</div>

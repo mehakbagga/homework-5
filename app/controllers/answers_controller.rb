@@ -1,5 +1,6 @@
 class AnswersController < ApplicationController
     before_action :find_post
+    before_action :authenticate_user!
   # create / destroy
 
   def create
