@@ -1,8 +1,10 @@
-<h1>Posts Index Page</h1>
-
-<% @posts.each do |post| %>
-  <div>
-    <h2><%= link_to post.title, post_path(post) %></h2>
-    <p><%= post.body %></p>
-  </div>
-<% end %>
+ <div class="mx-3 my-3 d-flex flex-row flex-wrap justify-content-between index-posts-box">
+    <% @posts.each do |post| %>
+        <div class="card mb-3 index-card">
+            <div class="card-body">
+            <h5 class="card-title"><%= link_to post.title, post_path(post), class: "index-post-title" %></h5>
+            <p class="card-text limited-text one-line"><%= post.body %></p>
+            </div>
+        </div>
+    <% end %> 
+</div>

@@ -1,9 +1,6 @@
 class Post < ApplicationRecord
-
-    validates :title, presence: {message: "must be provided"},
-    uniqueness: true, length: {minimum: 2, maximum: 200}
-
-    validates :body, presence: true, length: {minimum: 50}
-
-    has_many :answers, dependent: :destroy
+    has_many :comments, dependent: :destroy
+    belongs_to :user 
+    validates :title, presence: true, uniqueness: true
+    validates :body, presence: true, length: { minimum: 50 }
 end

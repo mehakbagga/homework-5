@@ -1,13 +1,15 @@
-<h1>Sign In</h1>
+<div class="my-2 mx-3">
+<h3 class="mb-3">Log In</h3>
 
 <%= form_with url: session_path do |form| %>
-  <div>
-    <%= form.label :email %>
-    <%= form.text_field :email %>
-  </div>
-  <div>
-    <%= form.label :password %>
-    <%= form.password_field :password %>
-  </div>
-  <%= form.submit "Sign In" %>
-<% end %>
+    <div class="mb-3">
+        <%= form.label :email, class: "form-label"%>
+        <%= form.text_field :email, class: "form-control"%>
+    </div>
+    <div class="mb-3">
+        <%= form.label :password, class: "form-label" %>
+        <%= form.password_field :password, class: "form-control"%>
+    </div>
+    <%= form.submit "Log In", class: "btn btn-primary" %> 
+<% end %> 
+</div>

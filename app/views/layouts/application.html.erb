@@ -5,24 +5,33 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    
   </head>
 
   <body>
+    <nav class="navbar navbar-expand-lg bg-light my-nav">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Blog On Rails</a>
+            
+            <a class="nav-link ms-auto pe-0" href="/">Home</a>
+            <a class="nav-link" href="/posts/new">New Post</a>
+            <% if current_user %>
+                  <%= link_to "Hi, #{current_user.name}", edit_user_path(current_user), class: "nav-link" %> 
+                  <%= button_to "Log Out", session_path, method: :delete, class: "btn btn-primary" %> 
+            <% else %>
+                  <%= button_to "Log In", new_session_path, method: :get, class: "btn btn-primary me-2" %> 
+                  <%= button_to "Sign Up", new_user_path, method: :get, class: "btn btn-primary" %>
+            <% end %>  
+         
+      </div>
+    </nav>
 
-    <%= render"navbar"%>
-    
+    <div class="my-1 mx-3 text-muted">
+    <%= flash[:notice] || flash[:alert] %>
+    </div>
+
     <%= yield %>
+   
   </body>
 </html>
-
-
-
-
-
-
-
-
