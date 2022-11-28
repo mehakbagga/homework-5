@@ -1,28 +1,44 @@
-<h1>Post Show page</h1>
+<div class="mx-3 my-3">
 <h2><%= @post.title %></h2>
 <p><%= @post.body %></p>
-<p><small>Posted at: <%= time_ago_in_words(@post.created_at) %> ago </small></p>
-
-<div>
-  <%= link_to 'Edit', edit_post_path(@post) %>
-  <%= button_to 'Delete', post_path(@post), method: :delete, form: { data: { turbo_confirm: "Are you sure?" } }  %>  
-</div>
-
-<% @answers.each do |answer| %>
-    <div>
-    <%= answer.body %>
-    <small>Commented <%= time_ago_in_words(answer.created_at) %></small>
-    <%= button_to "Delete", post_answer_path(@post, answer), method: :delete,form: { data: { turbo_confirm: "Are you sure?" } } %>  
-    
-    <hr>
+<small>Posted <%= time_ago_in_words(@post.created_at) %> ago by <%= @post.user.name %></small>
+<% if can?(:crud, @post) %> 
+    <div class="btn-toolbar mt-2" role="toolbar" aria-label="Toolbar with button groups">
+        <div class="btn-group me-2" role="group">
+            <%= button_to "Edit", edit_post_path(@post), method: :get, class:"btn btn-outline-primary mb-3" %> 
+        </div>
+        <div class="btn-group" role="group">
+            <%= button_to "Delete", post_path(@post), method: :delete, form: { data: { turbo_confirm: "Are you sure?" } }, class:"btn btn-outline-primary mb-3"%> 
+        </div>
     </div>
-<% end %>
-
-<%= form_with(model:[@post, @answer]) do |f| %>
-  <div>
-    <%= f.label :answer %>
-    <br>
-    <%= f.text_area :body, cols: 50, rows: 5, placeholder: "What's on your mind?" %>
-  </div>
-  <%= f.submit "Submit" %>
-<% end %>
+<% end %> 
+<% if @comment.errors.any? %>
+    <% @comment.errors.full_messages.each do |msg| %>
+        <p class="text-muted"><%= msg %> </p>
+    <% end %>  
+<% end %> 
+<%= form_with(model:[@post, @comment]) do |form| %>
+    <div>
+        <%= form.label :body, "Comment", class: "form-label comment-headline" %>
+        <%= form.text_area :body, class: "form-control mb-3", placeholder:"What's on your mind?" %>  
+    
+        <%= form.submit "Submit", class: "btn btn-outline-primary mb-4" %> 
+    <div>
+<% end %> 
+<% @comments.each do |comment|%>  
+    <div class="mb-2">
+        
+        <p class="comment-p"><%= comment.body %></p>
+        <small class="comment-small">Commented <%= time_ago_in_words(comment.created_at) %> ago by <%= comment.user.name %>  
+        <% if can?(:crud, comment) || can?(:crud, @post) %> 
+        <span class="dot">●</span>
+        <span class="btn-group comment-delete-link-div">
+        <%= button_to "Delete", post_comment_path(@post, comment), method: :delete, form: {data: {turbo_confirm: 'Are you sure?'}}, class: "btn btn-link comment-delete-link" %>
+        </span>
+        <% end %> 
+        </small>
+        
+    </div>
+     
+<% end %> 
+</div>

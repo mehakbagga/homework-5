@@ -1,14 +1,16 @@
-<%= form_with(model: @post) do |f| %>
+<% if @post.errors.any? %>
+    <% @post.errors.full_messages.each do |msg| %>
+        <p class="text-muted"><%= msg %> </p>
+    <% end %>  
+<% end %> 
+<%= form_with(model:@post) do |form| %>
     <div>
-        <%= f.label :title %>
-        <br>
-        <%= f.text_field :title %>
-    </div>
+        <%= form.label :title, class: "form-label" %>
+        <%= form.text_field :title, class: "form-control mb-3" %>  
     <div>
-        <%= f.label :body %>
-        <br>
-        <%= f.text_area :body, cols: 50, rows: 5 %>
-    </div>    
-    <%= f.submit %>
-    
-<% end %>
+    <div>
+        <%= form.label :body, class: "form-label" %>
+        <%= form.text_area :body, class: "form-control mb-3" %>  
+    <div>
+    <%= form.submit @button_text, class:"btn btn-outline-primary mb-3" %> 
+<% end %> 

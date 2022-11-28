@@ -1,19 +1,21 @@
-<div>
-    <%= form_with model: @user, method: :patch, local: true do |f| %>
-    <div>
-        <%= f.label :first_name %>
-        <%= f.text_field :first_name %>
+<div class="mx-3 my-2">
+<h3 class="mb-3">Edit Your Account</h3>
+
+<% if @user.errors.any? %>
+    <% @user.errors.full_messages.each do |msg| %>
+        <p><%= msg %> </p>
+    <% end %> 
+<% end %>  
+<%= form_with(model: @user) do |form| %>
+    <div class="mb-3">
+        <%= form.label :name, class: "form-label" %>
+        <%= form.text_field :name, class: "form-control" %>  
     </div>
-    <div>
-        <%= f.label :last_name %>
-        <%= f.text_field :last_name %>
+    <div class="mb-3">
+        <%= form.label :email, class: "form-label"%>
+        <%= form.text_field :email, class: "form-control"%>
     </div>
-    <div>
-        <%= f.label :email %>
-        <%= f.email_field :email %>
-    </div>
-    <%= f.submit "Update", class: 'btn btn-primary' %>
-    <% end %>
-    <br/>
-    <%= link_to 'Change Password', edit_password_path(@user) %>
+    <%= form.submit "Update Account", class: "btn btn-primary mb-3" %> 
+<% end %> 
+<%= link_to "Change Password", change_user_password_path, method: :get %> 
 </div>

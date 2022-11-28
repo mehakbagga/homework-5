@@ -53,9 +53,15 @@ gem "pry-rails"
 
 gem "faker"
 
-gem 'bootstrap', '~> 5.1.3'
+gem 'email_validator'
+
+gem "sassc-rails"
+
+gem 'bootstrap', '~> 5.1', '>= 5.1.3'
 
 gem 'jquery-rails'
+
+gem 'cancancan'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

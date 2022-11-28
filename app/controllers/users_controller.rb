@@ -1,68 +1,59 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, only: [:edit, :update, :password_edit, :password_update]
-  before_action :find_user, only: [:edit, :update, :password_edit, :password_update]
-  before_action :authorize, only: [:edit, :update, :password_edit, :password_update] 
-  
+
+  before_action :find_user, except: [:new, :create]
+  before_action :authorize_user!, except: [:new, :create]
+
   def new
-      @user=User.new
+      @user = User.new
   end
+
   def create
-    
-  @user=User.new user_params # Strong parameters
-  if @user.save
-      session[:user_id]=@user.id
-      redirect_to root_path, notice: "Logged in"
-  else
-      render :new
+      @user = User.new params.require(:user).permit!
+      if @user.save
+          session[:user_id] = @user.id 
+          redirect_to root_path, notice: "Successfully signed up"
+      else  
+          render :new, status: 303
+      end
   end
-  end
-  
+
   def edit
   end
 
   def update
-    if @user.update user_params
-        flash[:success] = "Profile updated!"
-        redirect_to root_path
-      else
-        flash[:danger] = @user.errors.full_messages.join(", ")
-        redirect_to edit_user_path(@user)
+      @user.update params.require(:user).permit!
+      if @user.save
+          redirect_to root_path, notice: "Successfully updated your account"
+      else 
+          render :edit, status: 303
       end
   end
 
-  def password_edit
+  def change_password
   end
 
-  def password_update
-    if @user&.authenticate(params[:user][:current_password])
-      if @user.update user_params     
-        flash[:success] = "Password updated!"
-        redirect_to root_path
-      else
-        flash[:danger] = @user.errors.full_messages.join(", ")
-        redirect_to edit_password_path(@user)
-      end
-    else
-      flash[:danger] = "You've entered an invalid current password"
-      redirect_to edit_password_path(@user)
-    end
+  def patch_changed_password
+
+      #if params.require(:user).permit(:current_password) != params.require(:user).permit(:password)
+         
+          if @user.authenticate(params[:user][:current_password])
+              if params[:user][:current_password] != params[:user][:password]
+                  @user.update(params.require(:user).permit(:password, :password_confirmation))
+                  if @user.save
+                      redirect_to root_path, notice: "Password updated" and return  
+                  end
+              end
+          end
+          render :change_password
   end
 
   private
-  def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation)
-  end
-
 
   def find_user
-    @user = User.find params[:id]
+      @user = User.find params[:id]
   end
-
-  def authorize 
-    unless can? :crud, @user
-      flash[:danger] = "Not Authorized"
-      redirect_to root_path
-    end
-  end 
-
+  
+  def authorize_user!
+      redirect_to root_path, notice: "Not Authorized" unless can?(:crud, @user)
+  end
 end

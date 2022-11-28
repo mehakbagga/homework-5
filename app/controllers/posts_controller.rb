@@ -1,60 +1,64 @@
 class PostsController < ApplicationController
 
-  before_action :authenticate_user!, except: [:index, :show]
-  before_action :find_post, only:[:show, :edit, :update, :destroy]
+  before_action :find_post, except: [:new, :create, :index]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :authorize_user!, only: [:edit, :update, :destroy]
 
-    def new
-        @post = Post.new
-    end
+  def new
+      @post = Post.new
+  end
 
-    def create
-        @post = Post.new(post_params)
-        puts @post
-        puts post_params
-
-        if @post.save
-          puts "Saved"
-          flash[:notice]= "Post created successfully!"
+  def create
+      @post = Post.new post_params
+      @post.user = current_user
+      if @post.save
+          flash[:notice] = "New Post Created"
           redirect_to post_path(@post)
-        else
-          render :new
-        end
+      else  
+          render :new, status: 303
+      end
+  end
+
+  def show
+     @comments = @post.comments.order(created_at: :desc)
+     @comment = Comment.new
+  end
+
+  def index
+      @posts = Post.order(created_at: :desc)
+  end
+
+  def edit
+  end
+
+  def update
+      @post.update post_params
+      if @post.save
+          flash[:notice] = "Post Updated"
+          redirect_to post_path(@post)
+      else  
+          render :edit, status: 303
       end
 
-    def index
-        @posts = Post.all.order(created_at: :desc)
-    end  
+  end
 
-    def show
-      @answers = @post.answers.order(created_at: :desc)
-      @answer = Answer.new
-    end
-
-    def edit
-      
-    end
-
-    def update
-      if @post.update(post_params)
-        redirect_to post_path(@post)
-      else
-        render :edit
-      end
-    end
-
-    def destroy
+  def destroy 
       @post.destroy
+      flash[:notice] = "Post Deleted"
       redirect_to posts_path
-    end
+  end
 
+  private
 
-    private
+  def post_params
+      params.require(:post).permit!
+  end
 
-    def find_post
+  def find_post
       @post = Post.find params[:id]
-    end
+  end
 
-    def post_params
-      params.require(:post).permit(:title, :body)
-    end
+  def authorize_user!
+      redirect_to post_path(@post), notice: "Not Authorized" unless can?(:crud, @post)
+  end
 end
